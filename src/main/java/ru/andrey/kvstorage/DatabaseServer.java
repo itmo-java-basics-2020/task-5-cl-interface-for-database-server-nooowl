@@ -5,6 +5,7 @@ import ru.andrey.kvstorage.console.ExecutionEnvironment;
 import ru.andrey.kvstorage.exception.DatabaseException;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 public class DatabaseServer {
 
@@ -19,7 +20,7 @@ public class DatabaseServer {
 
     DatabaseCommandResult executeNextCommand(String commandText) {
         if (commandText == null) {
-            return Results.failed("Command text can't be null");
+            return DatabaseCommandResult.failed("Command text can't be null");
         }
         String[] splitCommand = commandText.split("\\s+");
 
@@ -31,8 +32,8 @@ public class DatabaseServer {
                 args = Arrays.copyOfRange(splitCommand, 1, splitCommand.length);
             }
             return databaseCommand.getCommand(env, args).execute();
-        } catch (DatabaseException | IllegalArgumentException e) {
-            return Results.failed(e.getMessage());
+        } catch (DatabaseException | IllegalArgumentException | NoSuchElementException e) {
+            return DatabaseCommandResult.failed(e.getMessage());
         }
     }
 }

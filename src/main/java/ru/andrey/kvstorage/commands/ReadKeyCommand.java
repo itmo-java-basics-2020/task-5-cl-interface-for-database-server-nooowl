@@ -1,6 +1,5 @@
 package ru.andrey.kvstorage.commands;
 
-import ru.andrey.kvstorage.Results;
 import ru.andrey.kvstorage.console.DatabaseCommand;
 import ru.andrey.kvstorage.console.DatabaseCommandResult;
 import ru.andrey.kvstorage.console.ExecutionEnvironment;
@@ -24,10 +23,7 @@ public class ReadKeyCommand implements DatabaseCommand {
 
     @Override
     public DatabaseCommandResult execute() throws DatabaseException {
-        Database database = executionEnvironment.getDatabase(databaseName).orElse(null);
-        if (database == null) {
-            return Results.failed("No such database: " + databaseName);
-        }
-        return Results.success(database.read(tableName, key));
+        Database database = executionEnvironment.getDatabase(databaseName).orElseThrow();
+        return DatabaseCommandResult.success(database.read(tableName, key));
     }
 }

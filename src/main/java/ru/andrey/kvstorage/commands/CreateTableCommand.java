@@ -1,6 +1,5 @@
 package ru.andrey.kvstorage.commands;
 
-import ru.andrey.kvstorage.Results;
 import ru.andrey.kvstorage.console.DatabaseCommand;
 import ru.andrey.kvstorage.console.DatabaseCommandResult;
 import ru.andrey.kvstorage.console.ExecutionEnvironment;
@@ -20,11 +19,8 @@ public class CreateTableCommand implements DatabaseCommand {
 
     @Override
     public DatabaseCommandResult execute() throws DatabaseException {
-        Database database = executionEnvironment.getDatabase(databaseName).orElse(null);
-        if (database == null) {
-            return Results.failed("No such database: " + databaseName);
-        }
+        Database database = executionEnvironment.getDatabase(databaseName).orElseThrow();
         database.createTableIfNotExists(tableName);
-        return Results.success();
+        return DatabaseCommandResult.success();
     }
 }

@@ -13,31 +13,44 @@ public interface DatabaseCommandResult {
     String getErrorMessage();
 
     enum DatabaseCommandStatus {
-        SUCCESS, FAILED
+        SUCCESS,
+        FAILED
     }
 
-    public class DatabaseCommandResultImpl implements DatabaseCommandResult {
+    static DatabaseCommandResult success(String result) {
+        return new DatabaseCommandResultImpl(DatabaseCommandStatus.SUCCESS, result);
+    }
+
+    static DatabaseCommandResult success() {
+        return success(null);
+    }
+
+    static DatabaseCommandResult failed(String errorMessage) {
+        return new DatabaseCommandResultImpl(DatabaseCommandStatus.FAILED, null, errorMessage);
+    }
+
+    class DatabaseCommandResultImpl implements DatabaseCommandResult {
         private DatabaseCommandStatus status;
-        private Optional<String> result;
+        private String result;
         private String errorMessage;
 
-        public DatabaseCommandResultImpl(DatabaseCommandStatus status, String result, String errorMessage) {
+        private DatabaseCommandResultImpl(DatabaseCommandStatus status, String result, String errorMessage) {
             this.status = status;
-            this.result = Optional.ofNullable(result);
+            this.result = result;
             this.errorMessage = errorMessage;
         }
 
-        public DatabaseCommandResultImpl(DatabaseCommandStatus status, String result) {
+        private DatabaseCommandResultImpl(DatabaseCommandStatus status, String result) {
             this(status, result, null);
         }
 
-        public DatabaseCommandResultImpl(DatabaseCommandStatus status) {
+        private DatabaseCommandResultImpl(DatabaseCommandStatus status) {
             this(status, null);
         }
 
         @Override
         public Optional<String> getResult() {
-            return result;
+            return Optional.ofNullable(result);
         }
 
         @Override
